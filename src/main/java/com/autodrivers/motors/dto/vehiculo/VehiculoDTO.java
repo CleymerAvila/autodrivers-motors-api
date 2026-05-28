@@ -2,6 +2,7 @@ package com.autodrivers.motors.dto.vehiculo;
 
 import com.autodrivers.motors.domain.model.EstadoVehiculo;
 import com.autodrivers.motors.domain.model.Vehiculo;
+import com.autodrivers.motors.dto.conversor.TasaCambio;
 
 import java.time.LocalDate;
 
@@ -13,15 +14,19 @@ public record VehiculoDTO(
         String modelo,
         LocalDate anioFabricacion,
         EstadoVehiculo estado,
-        String color
+        String color,
+        TasaCambio tasaCambioUSD,
+        TasaCambio tasaCambioEUR
 ) {
 
-    public VehiculoDTO(Vehiculo vehiculo){
+    public VehiculoDTO(Vehiculo vehiculo, TasaCambio tasaCambioUSD, TasaCambio tasaCambioEUR){
         this(
                 vehiculo.getVehiculoId(), vehiculo.getPlaca(),
                 vehiculo.getPrecio(), vehiculo.getMarca(),vehiculo.getModelo(),
                 vehiculo.getAnioFabricacion(), vehiculo.getEstado(),
-                vehiculo.getColor()
+                vehiculo.getColor(),
+                tasaCambioUSD,
+                tasaCambioEUR
         );
     }
 }

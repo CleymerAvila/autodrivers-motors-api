@@ -25,6 +25,7 @@ public class Vehiculo {
     private String modelo;
     private LocalDate anioFabricacion;
     private double precio;
+    @Enumerated(EnumType.STRING)
     private EstadoVehiculo estado;
     private String color;
 
