@@ -3,7 +3,7 @@ CREATE DATABASE motorsdb;
 
 CREATE TABLE vehiculos (
     vehiculo_id INT PRIMARY KEY AUTO_INCREMENT,
-    placa VARCHAR(10) NOT UNIQUE,
+    placa VARCHAR(10) UNIQUE,
     precio DECIMAL(10,2),
     marca VARCHAR(70) NOT NULL,
     modelo VARCHAR(60) NOT NULL,
