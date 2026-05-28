@@ -2,6 +2,7 @@ package com.autodrivers.motors.domain.model;
 
 import com.autodrivers.motors.dto.vehiculo.ActualizarVehiculoDTO;
 import com.autodrivers.motors.dto.vehiculo.CrearVehiculoDTO;
+import com.autodrivers.motors.infrastructure.errors.exception.BusinessRulesValidationException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -57,11 +58,11 @@ public class Vehiculo {
         }
 
         if(this.estado.equals(EstadoVehiculo.VENDIDO)){
-            throw new IllegalArgumentException("No es posible actualizar este vehiculo ya que no se encuentra disponible");
+            throw new BusinessRulesValidationException("No es posible actualizar este vehiculo ya que no se encuentra disponible");
         }
 
         if(datos.estado().equals(EstadoVehiculo.VENDIDO)){
-            throw new IllegalArgumentException("No es posible actualizar el estado del vehiculo a vendido");
+            throw new BusinessRulesValidationException("No es posible actualizar el estado del vehiculo a vendido");
 
         }
         this.estado = datos.estado();
