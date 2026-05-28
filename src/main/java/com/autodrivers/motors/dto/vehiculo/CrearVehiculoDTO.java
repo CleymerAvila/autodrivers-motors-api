@@ -10,7 +10,6 @@ public record CrearVehiculoDTO(
         String modelo,
         String color,
         double precio,
-        LocalDate anioFabricacion,
-        EstadoVehiculo estado
+        LocalDate anioFabricacion
 ) {
 }
