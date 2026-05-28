@@ -3,6 +3,7 @@ package com.autodrivers.motors.service;
 import com.autodrivers.motors.domain.model.EstadoVehiculo;
 import com.autodrivers.motors.domain.model.Vehiculo;
 import com.autodrivers.motors.domain.repository.RepositorioVehiculo;
+import com.autodrivers.motors.dto.conversor.TasaCambio;
 import com.autodrivers.motors.dto.vehiculo.ActualizarVehiculoDTO;
 import com.autodrivers.motors.dto.vehiculo.CrearVehiculoDTO;
 import com.autodrivers.motors.dto.vehiculo.VehiculoDTO;
@@ -17,27 +18,52 @@ public class VehiculoServicio {
 
     @Autowired
     public RepositorioVehiculo repoVehiculo;
+    @Autowired
+    public ConvertidorMonedaServicio convertidorMonedaServicio;
 
 
     public VehiculoDTO crearVehiculo(CrearVehiculoDTO datos){
         var vehiculo  = new Vehiculo(datos);
-        return new VehiculoDTO(this.repoVehiculo.save(vehiculo));
+
+        var vehiculoGuardado = this.repoVehiculo.save(vehiculo);
+        TasaCambio tasaCambioUSD = consultarCambio("USD", vehiculoGuardado.getPrecio());
+        TasaCambio tasaCambioEUR = consultarCambio("EUR", vehiculoGuardado.getPrecio());
+
+        System.out.println("Tasa cambio usd: " + tasaCambioUSD);
+        System.out.println("Tasa cambio eur: " + tasaCambioEUR);
+        return  new VehiculoDTO(vehiculoGuardado, tasaCambioUSD, tasaCambioEUR);
     }
 
     public List<VehiculoDTO> obtenerTodosLosVehiculos(){
-        return this.repoVehiculo.findAll().stream().map(VehiculoDTO::new).toList();
+        return this.repoVehiculo.findAll().stream().map( vehiculo -> {
+            TasaCambio tasaCambioUsd = consultarCambio("USD", vehiculo.getPrecio());
+            TasaCambio tasaCambioEur= consultarCambio("EUR", vehiculo.getPrecio());
+
+            return new VehiculoDTO(vehiculo, tasaCambioUsd, tasaCambioEur);
+        }).toList();
     }
 
     public List<VehiculoDTO> obtenerVehiculosDisponibles(){
         return this.repoVehiculo.findAll().stream().filter(
                 v -> v.getEstado().equals(EstadoVehiculo.DISPONIBLE))
-                .map(VehiculoDTO::new).toList();
+                .map( vehiculo -> {
+                    TasaCambio tasaCambioUsd = consultarCambio("USD", vehiculo.getPrecio());
+                    TasaCambio tasaCambioEur = consultarCambio("EUR", vehiculo.getPrecio());
+
+                    return new VehiculoDTO(vehiculo, tasaCambioUsd, tasaCambioEur);
+                }).toList();
     }
 
     public List<VehiculoDTO> obtenerVehiculosPorMarca(String marca){
         return this.repoVehiculo.findAll().stream().filter(
                 vehiculo -> vehiculo.getMarca().equalsIgnoreCase(marca)
-                ).map(VehiculoDTO::new).toList();
+                ).map(
+                vehiculo -> {
+                    TasaCambio tasaCambioUsd = consultarCambio("USD", vehiculo.getPrecio());
+                    TasaCambio tasaCambioEur = consultarCambio("EUR", vehiculo.getPrecio());
+
+                    return new VehiculoDTO(vehiculo, tasaCambioUsd, tasaCambioEur);
+                }).toList();
     }
 
     public void eliminarVehiculo(long vehiculoId){
@@ -45,10 +71,22 @@ public class VehiculoServicio {
     }
 
     public VehiculoDTO obtenerVehiculoPorId(long vehiculoId){
-        return this.repoVehiculo.findById(vehiculoId).map(
-                VehiculoDTO::new)
+        return this.repoVehiculo.findById(vehiculoId).map( vehiculo -> {
+                    TasaCambio tasaCambioUsd = consultarCambio("USD", vehiculo.getPrecio());
+                    TasaCambio tasaCambioEur = consultarCambio("EUR", vehiculo.getPrecio());
+
+                    return new VehiculoDTO(vehiculo, tasaCambioUsd, tasaCambioEur);
+                })
                 .orElseThrow(() ->
                 new EntityNotFoundException("Vehiculo no encontrado")
+        );
+    }
+
+    private TasaCambio consultarCambio(String paisDestino, double valor){
+        return this.convertidorMonedaServicio.consultarMonedaCambio(
+                "COP",
+                paisDestino,
+                valor
         );
     }
 
@@ -58,6 +96,9 @@ public class VehiculoServicio {
 
         vehiculo.actualizar(datos);
 
-        return new VehiculoDTO(this.repoVehiculo.save(vehiculo));
+        var vehiculoGuardado = this.repoVehiculo.save(vehiculo);
+        TasaCambio tasaCambioUSD = consultarCambio("USD", vehiculoGuardado.getPrecio());
+        TasaCambio tasaCambioEUR = consultarCambio("EUR", vehiculoGuardado.getPrecio());
+        return new VehiculoDTO(vehiculoGuardado, tasaCambioUSD, tasaCambioEUR);
     }
 }

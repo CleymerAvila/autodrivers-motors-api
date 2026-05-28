@@ -2,6 +2,7 @@ package com.autodrivers.motors.domain.model;
 
 import com.autodrivers.motors.dto.vehiculo.ActualizarVehiculoDTO;
 import com.autodrivers.motors.dto.vehiculo.CrearVehiculoDTO;
+import com.autodrivers.motors.infrastructure.errors.exception.BusinessRulesValidationException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class Vehiculo {
     private String modelo;
     private LocalDate anioFabricacion;
     private double precio;
+    @Enumerated(EnumType.STRING)
     private EstadoVehiculo estado;
     private String color;
 
@@ -54,5 +56,15 @@ public class Vehiculo {
         if(datos.precio()!=0 && datos.precio()!=this.precio){
             this.precio = datos.precio();
         }
+
+        if(this.estado.equals(EstadoVehiculo.VENDIDO)){
+            throw new BusinessRulesValidationException("No es posible actualizar este vehiculo ya que no se encuentra disponible");
+        }
+
+        if(datos.estado().equals(EstadoVehiculo.VENDIDO)){
+            throw new BusinessRulesValidationException("No es posible actualizar el estado del vehiculo a vendido");
+
+        }
+        this.estado = datos.estado();
     }
 }
