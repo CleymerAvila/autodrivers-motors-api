@@ -6,6 +6,7 @@ import com.autodrivers.motors.dto.vehiculo.ActualizarVehiculoDTO;
 import com.autodrivers.motors.dto.vehiculo.CrearVehiculoDTO;
 import com.autodrivers.motors.dto.vehiculo.VehiculoDTO;
 import com.autodrivers.motors.service.VehiculoServicio;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,7 +46,7 @@ public class VehiculoControlador {
     }
 
     @PostMapping
-    public ResponseEntity<VehiculoDTO> crearVehiculo(@RequestBody CrearVehiculoDTO datos, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity<VehiculoDTO> crearVehiculo(@Valid  @RequestBody CrearVehiculoDTO datos, UriComponentsBuilder uriComponentsBuilder){
 
         var vehiculo = this.vehiculoServicio.crearVehiculo(datos);
 
@@ -61,7 +62,7 @@ public class VehiculoControlador {
     }
 
     @PutMapping("/{vehiculoId}")
-    public ResponseEntity<VehiculoDTO> actualizarVehiculo(@RequestBody ActualizarVehiculoDTO datos, long vehiculoId){
+    public ResponseEntity<VehiculoDTO> actualizarVehiculo(@Valid @RequestBody ActualizarVehiculoDTO datos, @PathVariable long vehiculoId){
         var vehiculo = this.vehiculoServicio.actualizarVehiculo(datos, vehiculoId);
 
         return ResponseEntity.ok(vehiculo);
