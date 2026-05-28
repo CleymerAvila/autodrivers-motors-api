@@ -5,6 +5,7 @@ import com.autodrivers.motors.dto.cliente.ActualizarClienteDTO;
 import com.autodrivers.motors.dto.cliente.ClienteDTO;
 import com.autodrivers.motors.dto.cliente.CrearClienteDTO;
 import com.autodrivers.motors.service.ClienteServicio;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class ClienteControlador {
     }
 
     @PostMapping
-    public ResponseEntity<ClienteDTO> crearCliente(@RequestBody CrearClienteDTO datos, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity<ClienteDTO> crearCliente(@Valid  @RequestBody CrearClienteDTO datos, UriComponentsBuilder uriComponentsBuilder){
 
         var cliente = this.clienteServicio.crearCliente(datos);
 
@@ -44,9 +45,15 @@ public class ClienteControlador {
     }
 
     @PutMapping("/{clienteId}")
-    public ResponseEntity<ClienteDTO> actualizarCliente(@RequestBody ActualizarClienteDTO datos, long clienteId){
+    public ResponseEntity<ClienteDTO> actualizarCliente(@Valid @RequestBody ActualizarClienteDTO datos, @PathVariable long clienteId){
         var cliente = this.clienteServicio.actualizarCliente(clienteId, datos);
         return ResponseEntity.ok(cliente);
+    }
+
+    @DeleteMapping("/{clienteId}")
+    public ResponseEntity<Void> eliminarCliente(@PathVariable long clienteId){
+        this.clienteServicio.eliminarClientePorId(clienteId);
+        return ResponseEntity.noContent().build();
     }
 
 

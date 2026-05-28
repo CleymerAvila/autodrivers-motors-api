@@ -55,5 +55,15 @@ public class Vehiculo {
         if(datos.precio()!=0 && datos.precio()!=this.precio){
             this.precio = datos.precio();
         }
+
+        if(this.estado.equals(EstadoVehiculo.VENDIDO)){
+            throw new IllegalArgumentException("No es posible actualizar este vehiculo ya que no se encuentra disponible");
+        }
+
+        if(datos.estado().equals(EstadoVehiculo.VENDIDO)){
+            throw new IllegalArgumentException("No es posible actualizar el estado del vehiculo a vendido");
+
+        }
+        this.estado = datos.estado();
     }
 }
