@@ -1,7 +1,5 @@
 package com.autodrivers.motors.dto.venta;
 
-import com.autodrivers.motors.domain.model.Cliente;
-import com.autodrivers.motors.domain.model.Vehiculo;
 import com.autodrivers.motors.domain.model.VentaEstado;
 import com.autodrivers.motors.domain.model.VentaTipo;
 
@@ -10,8 +8,6 @@ import java.time.LocalDateTime;
 public record ActualizarVentaDTO(
         LocalDateTime fechaVenta,
         VentaTipo ventaTipo,
-        Vehiculo vehiculo,
-        Cliente cliente,
         String descripcion,
         VentaEstado ventaEstado,
         double valorFinal

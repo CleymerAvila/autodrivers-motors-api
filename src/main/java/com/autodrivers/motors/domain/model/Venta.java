@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "venta")
+@Table(name = "ventas")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,51 +20,44 @@ public class Venta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ventaId;
-    private LocalDateTime fechaVenta;
-    private VentaTipo ventaTipo;
+    private LocalDateTime fechaHora;
+    @Enumerated(EnumType.STRING)
+    private VentaTipo tipo;
     @OneToOne
     @JoinColumn(name = "vehiculo_id")
     private Vehiculo vehiculo;
-    @OneToMany
+    @OneToOne
     @JoinColumn(name = "cliente_id")
     private Cliente cliente;
     private String descripcion;
-    private VentaEstado ventaEstado;
+    @Enumerated(EnumType.STRING)
+    private VentaEstado estado;
     private double valorFinal;
 
     public Venta(RealizarVentaDTO datos) {
-        this.fechaVenta = datos.fechaVenta();
-        this.ventaTipo = datos.ventaTipo();
-        this.vehiculo = datos.vehiculo();
-        this.cliente = datos.cliente();
+        this.fechaHora = datos.fechaVenta();
+        this.tipo = datos.ventaTipo();
         this.descripcion = datos.descripcion();
-        this.ventaEstado = VentaEstado.PENDIENTE;
+        this.estado = VentaEstado.PENDIENTE;
         this.valorFinal = datos.valorFinal();
     }
 
     public void actualizar(ActualizarVentaDTO datos) {
-        if(!(datos.fechaVenta() != null) && !datos.fechaVenta().isEqual(this.fechaVenta)) {
-            this.fechaVenta = datos.fechaVenta();
+        if(!(datos.fechaVenta() != null) && !datos.fechaVenta().isEqual(this.fechaHora)) {
+            this.fechaHora = datos.fechaVenta();
         }
 
-        if(!(datos.ventaTipo() != null) && !datos.ventaTipo().equals(this.ventaTipo)) {
-            this.ventaTipo = datos.ventaTipo();
+        if(!(datos.ventaTipo() != null) && !datos.ventaTipo().equals(this.tipo)) {
+            this.tipo = datos.ventaTipo();
         }
 
-        if(!(datos.vehiculo() != null) && !datos.vehiculo().equals(this.vehiculo)) {
-            this.vehiculo = datos.vehiculo();
-        }
-
-        if(!(datos.cliente() != null) && !datos.cliente().equals(this.cliente)) {
-            this.cliente = datos.cliente();
-        }
 
         if(!(datos.descripcion() != null) && !datos.descripcion().equals(this.descripcion)) {
             this.descripcion = datos.descripcion();
         }
 
-        if(!(datos.ventaEstado() != null) && !datos.ventaEstado().equals(this.ventaEstado)) {
-            this.ventaEstado = datos.ventaEstado();
+        if(!(datos.ventaEstado() != null) && !datos.ventaEstado().equals(this.estado)) {
+            this.estado = datos.ventaEstado();
         }
 
         if(datos.valorFinal() !=0 && datos.valorFinal() != this.valorFinal) {

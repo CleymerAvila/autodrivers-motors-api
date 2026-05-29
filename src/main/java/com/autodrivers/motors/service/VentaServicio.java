@@ -1,12 +1,11 @@
 package com.autodrivers.motors.service;
 
-import com.autodrivers.motors.domain.model.Vehiculo;
 import com.autodrivers.motors.domain.model.Venta;
 import com.autodrivers.motors.domain.model.VentaEstado;
 import com.autodrivers.motors.domain.model.VentaTipo;
+import com.autodrivers.motors.domain.repository.RepositorioCliente;
+import com.autodrivers.motors.domain.repository.RepositorioVehiculo;
 import com.autodrivers.motors.domain.repository.RepositorioVenta;
-import com.autodrivers.motors.dto.vehiculo.CrearVehiculoDTO;
-import com.autodrivers.motors.dto.vehiculo.VehiculoDTO;
 import com.autodrivers.motors.dto.venta.ActualizarVentaDTO;
 import com.autodrivers.motors.dto.venta.RealizarVentaDTO;
 import com.autodrivers.motors.dto.venta.VentaDTO;
@@ -22,8 +21,23 @@ public class VentaServicio {
     @Autowired
     public RepositorioVenta repositorioVenta;
 
+    @Autowired
+    public RepositorioCliente repositorioCliente;
+
+    @Autowired
+    public RepositorioVehiculo repositorioVehiculo;
+
     public VentaDTO RealizarVenta(RealizarVentaDTO datos){
         var venta  = new Venta(datos);
+
+        var cliente = this.repositorioCliente.findById(datos.clienteId())
+                .orElseThrow(() -> new EntityNotFoundException("El cliente no fue encontrado"));
+
+        var vehiculo = this.repositorioVehiculo.findById(datos.vehiculoId())
+                .orElseThrow(() -> new EntityNotFoundException("El vehiculo no fue encontrado"));
+
+        venta.setCliente(cliente);
+        venta.setVehiculo(vehiculo);
         return new VentaDTO(this.repositorioVenta.save(venta));
     }
 
@@ -33,13 +47,13 @@ public class VentaServicio {
 
     public List<VentaDTO> obtenerVentasNuevas(){
         return this.repositorioVenta.findAll().stream().filter(
-                venta -> venta.getVentaTipo().equals(VentaTipo.NUEVO))
+                venta -> venta.getTipo().equals(VentaTipo.NUEVO))
                 .map(VentaDTO::new).toList();
     }
 
     public List<VentaDTO> obtenerVentasCompletadas(){
         return this.repositorioVenta.findAll().stream().filter(
-                venta -> venta.getVentaEstado().equals(VentaEstado.COMPLETADA))
+                venta -> venta.getEstado().equals(VentaEstado.COMPLETADA))
                 .map(VentaDTO::new).toList();
     }
 
