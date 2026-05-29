@@ -8,17 +8,17 @@ public record VentaDTO(
         Long ventaId,
         LocalDateTime fechaVenta,
         VentaTipo ventaTipo,
-        Vehiculo vehiculo,
-        Cliente cliente,
+        long vehiculoId,
+        long clienteId,
         String descripcion,
         VentaEstado ventaEstado,
         double valorFinal
 ) {
 
     public VentaDTO (Venta venta) {
-        this(venta.getVentaId(), venta.getFechaVenta(), venta.getVentaTipo(),
-                venta.getVehiculo(), venta.getCliente(), venta.getDescripcion(),
-                venta.getVentaEstado(), venta.getValorFinal()
+        this(venta.getVentaId(), venta.getFechaHora(), venta.getTipo(),
+                venta.getVehiculo().getVehiculoId(), venta.getCliente().getClienteId(), venta.getDescripcion(),
+                venta.getEstado(), venta.getValorFinal()
         );
     }
 }

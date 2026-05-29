@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 public record RealizarVentaDTO(
         LocalDateTime fechaVenta,
         VentaTipo ventaTipo,
-        Vehiculo vehiculo,
-        Cliente cliente,
+        long vehiculoId,
+        long clienteId,
         String descripcion,
         VentaEstado ventaEstado,
         double valorFinal

@@ -50,14 +50,14 @@ public class MantenimientoControlador {
         return ResponseEntity.created(url).body(mantenimiento);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{mantenimientoId}")
     public ResponseEntity<Void> eliminarMantenimiento(@PathVariable long mantenimientoId) {
         this.mantenimientoServicio.eliminarMantenimiento(mantenimientoId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
-    public ResponseEntity<MantenimientoDTO> actualizarMantenimiento(@RequestBody ActualizarMantenimientoDTO datos, long mantenimientoId){
+    @PutMapping("/{mantenimientoId}")
+    public ResponseEntity<MantenimientoDTO> actualizarMantenimiento(@RequestBody ActualizarMantenimientoDTO datos,@PathVariable long mantenimientoId){
         var mantenimiento = this.mantenimientoServicio.actualizarMantenimiento(datos, mantenimientoId);
 
         return ResponseEntity.ok(mantenimiento);

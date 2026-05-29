@@ -4,6 +4,7 @@ import com.autodrivers.motors.dto.venta.ActualizarVentaDTO;
 import com.autodrivers.motors.dto.venta.RealizarVentaDTO;
 import com.autodrivers.motors.dto.venta.VentaDTO;
 import com.autodrivers.motors.service.VentaServicio;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class VentaControlador {
     }
 
     @PostMapping
-    public ResponseEntity<VentaDTO> realizarVenta(@RequestBody RealizarVentaDTO datos, UriComponentsBuilder uriComponentsBuilder) {
+    public ResponseEntity<VentaDTO> realizarVenta( @RequestBody RealizarVentaDTO datos, UriComponentsBuilder uriComponentsBuilder) {
         var venta = this.ventaServicio.RealizarVenta(datos);
 
         URI url = uriComponentsBuilder.path("/ventas/{ventaId}").buildAndExpand(venta.ventaId()).toUri();
@@ -50,14 +51,14 @@ public class VentaControlador {
         return ResponseEntity.created(url).body(venta);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{ventaId}")
     public ResponseEntity<Void> eliminarVenta(@PathVariable long ventaId){
         this.ventaServicio.eliminarVenta(ventaId);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping
-    public ResponseEntity<VentaDTO> actualizarVenta(@RequestBody ActualizarVentaDTO datos, Long ventaId){
+    @PutMapping("/{ventaId}")
+    public ResponseEntity<VentaDTO> actualizarVenta(@RequestBody ActualizarVentaDTO datos, @PathVariable Long ventaId){
         var venta = this.ventaServicio.actualizarVenta(datos, ventaId);
 
         return ResponseEntity.ok(venta);
